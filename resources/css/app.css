@@ -1,0 +1,125 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Fira+Code:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Stranger Things Red */
+  --primary: 348 100% 50%; /* #ff0033 */
+  --primary-foreground: 0 0% 100%;
+
+  /* Deep Void Black */
+  --background: 240 10% 4%; /* #09090b - slightly off-black for depth */
+  --foreground: 0 0% 90%;
+
+  /* CRT Monitor Green/Amber accents */
+  --accent: 142 70% 50%;
+  --accent-foreground: 240 10% 4%;
+
+  --muted: 240 6% 15%;
+  --muted-foreground: 240 5% 65%;
+
+  --card: 240 10% 6%;
+  --card-foreground: 0 0% 90%;
+
+  --border: 348 50% 20%;
+  --input: 240 6% 15%;
+  --ring: 348 100% 50%;
+  --radius: 0.25rem;
+}
+
+/* Custom Font Families mapped to variables for consistency */
+:root {
+  --font-serif: 'Merriweather', serif;
+  --font-mono: 'Fira Code', monospace;
+}
+
+@layer base {
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    letter-spacing: -0.025em; /* tracking-tight */
+    font-weight: 900;         /* font-black */
+  }
+}
+
+
+
+/* Custom Utilities for that Retro Feel */
+@layer utilities {
+  .text-shadow-neon {
+    text-shadow: 0 0 5px rgba(255, 0, 51, 0.5), 0 0 10px rgba(255, 0, 51, 0.3);
+  }
+  
+  .text-shadow-glitch {
+    text-shadow: 2px 2px 0px rgba(0, 255, 255, 0.5), -2px -2px 0px rgba(255, 0, 0, 0.5);
+  }
+
+  .scanline {
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0) 50%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.2)
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+  }
+
+  .crt-flicker {
+    animation:
+      flicker 0.12s infinite steps(2, end),
+      jitter 2.5s infinite;
+  }
+}
+
+@keyframes jitter {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-1px, 1px); }
+  40%  { transform: translate(1px, -1px); }
+  60%  { transform: translate(-2px, 0); }
+  80%  { transform: translate(2px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes flicker {
+  0%   { opacity: 1; }
+  3%   { opacity: 0.2; }
+  6%   { opacity: 0.9; }
+  9%   { opacity: 0.1; }
+  12%  { opacity: 0.85; }
+  15%  { opacity: 0.4; }
+  18%  { opacity: 1; }
+  22%  { opacity: 0.3; }
+  25%  { opacity: 0.95; }
+  30%  { opacity: 0.15; }
+  35%  { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.5);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
