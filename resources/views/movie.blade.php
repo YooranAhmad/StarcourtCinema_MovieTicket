@@ -30,34 +30,128 @@
             </svg>Back to Listings
         </a>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            
-            <img src="{{ asset($movie['image']) }}"
-                class="rounded-xl shadow-2xl border border-white/10">
+        <div class="flex md:flex-cols-2 gap-12 justify-center items-center">
+            <div class="space-y-8 md:gap-12">
+                <img src="{{ asset($movie['image']) }}"
+                class="w-sm h-auto rounded-xl shadow-2xl border border-white/10">
 
-            <div>
-                <h1 class="text-5xl font-serif text-primary mb-4">
+                <div class="border rounded-xl border-white/10 bg-white/3 p-4">
+                    <div class="flex justify-between items-center mb-2 border-b border-white/10 pb-2">
+                        <span class="text-zinc-400 text-md uppercase">Rating</span>
+                        <span class="px-2 py-1 border border-white/20 rounded">{{ $movie['rating'] }}</span>
+                    </div>
+                    <div class="flex gap-2 justify-between items-center mb-2 border-b border-white/10 pb-2">
+                        <span class="text-zinc-400 text-md uppercase">Duration</span>
+                        <span class="flex items-center gap-1 px-2 py-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-3 h-3" data-replit-metadata="client/src/pages/MovieDetails.tsx:101:19" data-component-name="Clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            {{ $movie['duration'] }}
+                        </span>
+                    </div>
+                    <div class="flex gap-2 justify-between items-center">
+                        <span class="text-zinc-400 text-md uppercase">Price</span>
+                        <span class="px-2 py-1 text-[hsl(var(--primary))]">{{ $movie['price'] }}</span>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="flex flex-col">
+                <h1 class="text-7xl font-serif mb-4">
                     {{ $movie['title'] }}
                 </h1>
 
-                <p class="text-zinc-400 mb-6">
+                <div class="flex items-center gap-2 mb-4">       
+                    @for ($i = 1; $i <= 5; $i++)
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            class="w-5 h-5 {{ $i <= $movie['stars'] ? 'text-yellow-500 fill-yellow-500' : 'text-zinc-600 fill-zinc-600' }}"
+                            fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                    @endfor
+                </div>
+                
+                <p class="border-l-4 border-[hsl(var(--primary))] pl-4 text-zinc-400 mb-2 leading-relaxed">
                     {{ $movie['description'] }}
                 </p>
 
-                <div class="flex gap-6 font-mono text-sm text-zinc-300">
-                    <span>{{ $movie['duration'] }}</span>
-                    <span class="px-2 py-1 border border-white/20 rounded">
-                        {{ $movie['rating'] }}
-                    </span>
-                </div>
-
-                <a href="#" class="inline-block mt-8 px-6 py-3 bg-[hsl(var(--primary))] text-white font-bold rounded hover:scale-105 transition">
-                    BOOK TICKET
+                <a href="#"
+                onclick="openTrailer()"
+                class="inline-flex items-center gap-2 mt-4 text-sm font-mono text-zinc-400 uppercase hover:text-[hsl(var(--primary))] transition">
+                    ▶ Watch Trailer
                 </a>
-                
-                
+
+
+                <div class="border border-white/10 mt-4 p-8 rounded-xl backdrop-blur-md">
+                    <div class="flex gap-2 items-center mb-2 pb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-5 h-5 text-[hsl(var(--primary))]"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+                        <span class="text-lg font-mono text-white font-bold uppercase">Available Showtimes</span>
+                    </div>
+    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        @foreach ($movie['showtimes'] as $showtime)
+                        <div class="bg-zinc-900 border border-zinc-700 p-3 text-center rounded text-white font-mono hover:bg-[hsl(var(--primary))] hover:text-black hover:border-[hsl(var(--primary))] cursor-default transition-all duration-200">{{ $showtime }}
+                        </div>
+                        @endforeach
+                    </div>
+
+                    <a href="#" class="mt-6 inline-block w-full text-center bg-[hsl(var(--primary))] hover:bg-white/5 hover:text-[hsl(var(--primary))] text-white font-bold py-3 rounded-lg uppercase tracking-wider transition-colors">
+                    BOOK TICKET
+                    </a>
+                </div>
             </div>
         </div>
     </section>
+
+    <!-- TRAILER MODAL -->
+
+    <div id="trailerModal"
+     class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
+
+    <!-- PANEL -->
+    <div class="relative w-full max-w-4xl mx-4">
+        
+        <!-- CLOSE -->
+        <button onclick="closeTrailer()"
+                class="absolute -top-10 right-0 text-zinc-400 hover:text-white text-sm font-mono">
+            ✕ Close
+        </button>
+
+        <!-- VIDEO -->
+        <div class="relative aspect-video rounded-xl overflow-hidden border border-white/10 shadow-2xl bg-black">
+                <iframe
+                    id="trailerIframe"
+                    src=""
+                    title="Movie Trailer"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen
+                    class="absolute inset-0 w-full h-full">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        function openTrailer() {
+            const modal = document.getElementById('trailerModal');
+            const iframe = document.getElementById('trailerIframe');
+
+            iframe.src = "https://www.youtube.com/embed/{{ $movie['trailer'] }}?autoplay=1";
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeTrailer() {
+            const modal = document.getElementById('trailerModal');
+            const iframe = document.getElementById('trailerIframe');
+
+            iframe.src = ""; // stop video
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    </script>
 </body>
 @endsection
