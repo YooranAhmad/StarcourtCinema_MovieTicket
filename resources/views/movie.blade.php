@@ -14,7 +14,7 @@
             <a href="/" class="hover:text-[hsl(var(--primary))] transition-colors">
                 MOVIES
             </a>
-            <a href="{{ route('bookings') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
+            <a href="{{ route('bookings.index') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
                 MY_TICKETS
             </a>
         </div>
@@ -43,7 +43,7 @@
                     <div class="flex gap-2 justify-between items-center mb-2 border-b border-white/10 pb-2">
                         <span class="text-zinc-400 text-md uppercase">Duration</span>
                         <span class="flex items-center gap-1 px-2 py-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-3 h-3" data-replit-metadata="client/src/pages/MovieDetails.tsx:101:19" data-component-name="Clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-3 h-3"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                             {{ $movie['duration'] }}
                         </span>
                     </div>
@@ -96,13 +96,103 @@
                         @endforeach
                     </div>
 
-                    <a href="#" class="mt-6 inline-block w-full text-center bg-[hsl(var(--primary))] hover:bg-white/5 hover:text-[hsl(var(--primary))] text-white font-bold py-3 rounded-lg uppercase tracking-wider transition-colors">
+                    <a href="#" onclick="openBookingModal()" class="mt-6 inline-block w-full text-center bg-[hsl(var(--primary))] hover:bg-white/5 hover:text-[hsl(var(--primary))] text-white font-bold py-3 rounded-lg uppercase tracking-wider transition-colors">
                     BOOK TICKET
                     </a>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- BOOKING MODAL -->
+<div id="bookingModalOverlay"
+     class="fixed inset-0 z-[999] hidden bg-black/80 backdrop-blur-sm items-center justify-center">
+
+    <!-- PANEL -->
+    <div class="grid grid-cols-1 w-full h-auto max-w-lg bg-zinc-950 border border-white/10 rounded-2xl p-8 shadow-2xl">
+
+        <!-- CLOSE -->
+        <button onclick="closeBookingModal()"
+                class="absolute top-4 right-4 text-zinc-400 hover:text-white font-mono text-sm">
+            ✕ Close
+        </button>
+
+        <h2 class="text-2xl font-serif mb-6 text-[hsl(var(--primary))]">
+            Book Ticket
+        </h2>
+
+        <form action="{{ route('bookings.store') }}" method="POST" class="space-y-4">
+            @csrf
+
+            <input type="hidden" name="movie_id" value="{{ $movie['id'] }}">
+            <input type="hidden" name="title" value="{{ $movie['title'] }}">
+            <input type="hidden" id="pricePerTicket" value="{{ str_replace('$','',$movie['price']) }}">
+
+            <div>
+                <label class="text-xs text-zinc-400">Name</label>
+                <input name="name" required
+                       class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white">
+            </div>
+
+            <div>
+                <label class="text-xs text-zinc-400">Email</label>
+                <input type="email" name="email" required
+                       class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white">
+            </div>
+
+            <div>
+                <label class="text-xs text-zinc-400">Showtime</label>
+                <select name="showtime" required
+                        class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white">
+                    @foreach ($movie['showtimes'] as $showtime)
+                        <option value="{{ $showtime }}">{{ $showtime }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="text-xs text-zinc-400">Seats (Select <span id="seatCountText">1</span>)</label>
+                <div id="seatSelection" class="grid grid-cols-8 gap-1 mt-2">
+                    @php
+                        $rows = ['A', 'B', 'C', 'D', 'E'];
+                        $cols = range(1, 8);
+                    @endphp
+                    @foreach($rows as $row)
+                        @foreach($cols as $col)
+                            @php $seatId = $row . $col; @endphp
+                            <div onclick="toggleSeat('{{ $seatId }}')" 
+                                 id="seat-{{ $seatId }}"
+                                 class="seat-item w-8 h-8 flex items-center justify-center border border-white/10 rounded text-[10px] cursor-pointer hover:bg-white/5 transition-colors text-zinc-400">
+                                {{ $seatId }}
+                            </div>
+                        @endforeach
+                    @endforeach
+                </div>
+                <input type="hidden" name="seat" id="selectedSeatsInput" required>
+            </div>
+
+            <div>
+                <label class="text-xs text-zinc-400">Quantity</label>
+                <input id="quantity" type="number" name="quantity" min="1" value="1"
+                       class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white">
+            </div>
+
+            <div>
+                <label class="text-xs text-zinc-400">Total Price</label>
+                <input id="totalPrice" type="text" name="total_price"
+                       value="{{ $movie['price'] }}"
+                       readonly
+                       class="w-full bg-black border border-white/10 rounded px-3 py-2 cursor-not-allowed text-white">
+            </div>
+
+            <button type="submit"
+                    class="w-full mt-4 py-3 bg-[hsl(var(--primary))] text-black font-bold rounded-lg hover:scale-[1.02] transition">
+                CONFIRM BOOKING
+            </button>
+        </form>
+    </div>
+</div>
+
 
     <!-- TRAILER MODAL -->
 
@@ -134,24 +224,91 @@
     </div>
 
     <!-- SCRIPTS -->
+
     <script>
-        function openTrailer() {
-            const modal = document.getElementById('trailerModal');
-            const iframe = document.getElementById('trailerIframe');
+    function openBookingModal() {
+        const modal = document.getElementById('bookingModalOverlay');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
 
-            iframe.src = "https://www.youtube.com/embed/{{ $movie['trailer'] }}?autoplay=1";
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+    function closeBookingModal() {
+        const modal = document.getElementById('bookingModalOverlay');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    const qtyInput = document.getElementById('quantity');
+    const totalInput = document.getElementById('totalPrice');
+    const price = parseFloat(document.getElementById('pricePerTicket').value);
+    const seatCountText = document.getElementById('seatCountText');
+    const selectedSeatsInput = document.getElementById('selectedSeatsInput');
+    let selectedSeats = [];
+
+    qtyInput.addEventListener('input', () => {
+        const qty = Math.max(1, qtyInput.value);
+        totalInput.value = `$${(price * qty).toFixed(2)}`;
+        seatCountText.innerText = qty;
+        
+        // Clear selection if quantity decreases below selection count
+        if (selectedSeats.length > qty) {
+            selectedSeats = selectedSeats.slice(0, qty);
+            updateSeatUI();
         }
+    });
 
-        function closeTrailer() {
-            const modal = document.getElementById('trailerModal');
-            const iframe = document.getElementById('trailerIframe');
-
-            iframe.src = ""; // stop video
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+    function toggleSeat(seatId) {
+        const qty = parseInt(qtyInput.value);
+        const index = selectedSeats.indexOf(seatId);
+        
+        if (index > -1) {
+            selectedSeats.splice(index, 1);
+        } else {
+            if (selectedSeats.length < qty) {
+                selectedSeats.push(seatId);
+            } else {
+                // Replace the first selected seat if at capacity
+                selectedSeats.shift();
+                selectedSeats.push(seatId);
+            }
         }
+        updateSeatUI();
+    }
+
+    function updateSeatUI() {
+        document.querySelectorAll('.seat-item').forEach(el => {
+            el.classList.remove('bg-[hsl(var(--primary))]', 'text-black', 'border-[hsl(var(--primary))]');
+            el.classList.add('text-zinc-400', 'border-white/10');
+        });
+
+        selectedSeats.forEach(seatId => {
+            const el = document.getElementById(`seat-${seatId}`);
+            if (el) {
+                el.classList.add('bg-[hsl(var(--primary))]', 'text-black', 'border-[hsl(var(--primary))]');
+                el.classList.remove('text-zinc-400', 'border-white/10');
+            }
+        });
+
+        selectedSeatsInput.value = selectedSeats.join(', ');
+    }
+
+    function openTrailer() {
+        const modal = document.getElementById('trailerModal');
+        const iframe = document.getElementById('trailerIframe');
+
+        iframe.src = "https://www.youtube.com/embed/{{ $movie['trailer'] }}?autoplay=1";
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeTrailer() {
+        const modal = document.getElementById('trailerModal');
+        const iframe = document.getElementById('trailerIframe');
+
+        iframe.src = ""; // stop video
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
     </script>
 </body>
 @endsection

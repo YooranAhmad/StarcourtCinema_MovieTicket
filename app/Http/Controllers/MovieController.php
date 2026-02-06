@@ -16,9 +16,10 @@ class MovieController extends Controller
                 'image' => 'images/season1.webp',
                 'stars' => 5,
                 'description' => 'A boy vanishes. A town begins to unravel.',
-                'price' => '$9.99',
+                'price' => 9.99,
                 'showtimes' => ['12:00 PM', '3:00 PM', '6:00 PM', '9:00 PM'],
                 'trailer' => 'CKtq-bZgS8I',
+                'id' => 1,
             ],
             2 => [
                 'title' => 'Season 2: Return to the Upside Down',
@@ -27,9 +28,10 @@ class MovieController extends Controller
                 'image' => 'images/season2.webp',
                 'stars' => 4,
                 'description' => 'The darkness never really left.',
-                'price' => '$10.99',
+                'price' => 10.99,
                 'showtimes' => ['1:00 PM', '4:00 PM', '7:00 PM', '10:00 PM'],
                 'trailer' => 'aXWG_kKDZlY',
+                'id' => 2,
             ],
             3 => [
                 'title' => 'Season 3: Red Lights, Blue Nights',
@@ -38,9 +40,10 @@ class MovieController extends Controller
                 'image' => 'images/season3.webp',
                 'stars' => 4,
                 'description' => 'Summer changes everything.',
-                'price' => '$12.99',
+                'price' => 11.99,
                 'showtimes' => ['11:00 AM', '2:00 PM', '5:00 PM', '8:00 PM'],
                 'trailer' => '74lKim237ZI',
+                'id' => 3,
             ],
         ];
 

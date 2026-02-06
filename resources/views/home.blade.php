@@ -13,7 +13,7 @@
             <a href="/" class="hover:text-[hsl(var(--primary))] transition-colors">
                 MOVIES
             </a>
-            <a href="{{ route('bookings') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
+            <a href="{{ route('bookings.index') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
                 MY_TICKETS
             </a>
         </div>

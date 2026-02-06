@@ -9,9 +9,13 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/bookings', function () {
-    return view('bookings');
-})->name('bookings');
+Route::get('/movie', function () {
+    return view('movie');
+})->name('movie');
+
+Route::get('/booking', function () {
+    return view('booking');
+})->name('booking');
 
 Route::get('/movie/{id}', [MovieController::class, 'show'])
 ->name('movie.show');
@@ -19,3 +23,8 @@ Route::get('/movie/{id}', [MovieController::class, 'show'])
 Route::get('/movie/{slug}', [MovieController::class, 'show'])
     ->name('movie.show');
 
+Route::post('/bookings', [BookingsController::class, 'store'])
+    ->name('bookings.store');
+
+Route::get('/bookings', [BookingsController::class, 'index'])
+    ->name('bookings.index');

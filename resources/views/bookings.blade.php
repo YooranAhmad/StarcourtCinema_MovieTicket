@@ -13,7 +13,7 @@
             <a href="/" class="hover:text-[hsl(var(--primary))] transition-colors">
                 MOVIES
             </a>
-            <a href="{{ route('bookings') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
+            <a href="{{ route('bookings.index') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
                 MY_TICKETS
             </a>
         </div>
@@ -78,11 +78,14 @@
                 <h2 class="text-white text-xl font-semibold uppercase">Active Reservations</h2>
             </div>
             
-            <div class="relative border border-white/10 rounded-lg p-4 text-white/70 bg-[hsl(var(--background))]">
+            @forelse($tickets as $ticket)
+            <div class="relative border border-white/10 rounded-lg p-4 mb-4 text-white/70 bg-[hsl(var(--background))]">
                 <div class="flex justify-between items-center">
                     <div class="flex flex-col">
                         <!--LEFT-SIDE: BOOKING INFO-->
-                        <h2 class="text-md font-semibold mb-2 text-[hsl(var(--primary))] uppercase">No Active Reservations</h2>
+                        <h2 class="text-md font-semibold mb-2 text-[hsl(var(--primary))] uppercase">
+                            {{ $ticket->title }}
+                        </h2>
                         <div class="text-xs text-zinc-500 flex items-center gap-2 mb-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-3 h-3">
                             <path d="M8 2v4"></path>
@@ -90,20 +93,26 @@
                             <rect width="18" height="18" x="3" y="4" rx="2"></rect>
                             <path d="M3 10h18"></path>
                             </svg>
-                            14:00
+                            {{ $ticket->showtime }}
                         </div>
 
                         <div class="text-xs text-zinc-500 flex items-center gap-2 uppercase">
-                            Theater: Starcourt Cinema 1
+                            Seat: {{ $ticket->seat }} (x{{ $ticket->quantity }})
+                        </div>
+                        <div class="text-xs text-[hsl(var(--primary))] mt-1 font-mono">
+                            Total: ${{ number_format($ticket->total_price, 2) }}
                         </div>
                     </div>
                     <div class="flex items-center gap-6 text-right">
                         <div class="space-y-1">
                             <div class="text-[10px] text-zinc-600 uppercase">
-                                ADMIT 1
+                                {{ $ticket->booking_code }}
                             </div>
                             <div class="text-white font-bold tracking-widest uppercase">
-                                Yooran
+                                {{ $ticket->name }}
+                            </div>
+                            <div class="text-[10px] text-zinc-500">
+                                {{ $ticket->email }}
                             </div>
                         </div>
                         <div class="w-12 h-12 bg-white/5 rounded border border-white/10 flex items-center justify-center">
@@ -115,11 +124,13 @@
                         </div>
                     </div>    
                 </div>
-                
-
             </div>
+            @empty
+            <div class="text-center py-12 text-zinc-500 font-mono">
+                NO TICKETS FOUND
+            </div>
+            @endforelse
+        </div>
     </div>
-
-    
 </body>
 @endsection
