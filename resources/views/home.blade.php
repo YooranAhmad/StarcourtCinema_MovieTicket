@@ -16,6 +16,15 @@
             <a href="{{ route('bookings.index') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
                 MY_TICKETS
             </a>
+            @auth
+                <a href="{{ route('dashboard') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
+                    ID_CARD
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="hover:text-[hsl(var(--primary))] transition-colors text-red-500/50" title="Verification Required: Please Login">
+                    ID_CARD (UNVERIFIED)
+                </a>
+            @endauth
         </div>
     </div>
 </header>
