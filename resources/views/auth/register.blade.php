@@ -27,7 +27,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+            <form method="POST" action="{{ route('register') }}" class="space-y-6">
                 @csrf
 
                 <!-- Name -->
@@ -43,7 +43,7 @@
                 <!-- Email Address -->
                 <div>
                     <label for="email" class="block text-zinc-400 uppercase text-[10px] tracking-widest mb-1 ml-1">{{ __('Email Address') }}</label>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
                         class="w-full bg-black border border-red-950 text-zinc-200 px-4 py-3 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all font-mono text-sm">
                     @if ($errors->has('email'))
                         <p class="text-red-600 text-[10px] uppercase tracking-wider mt-1 ml-1">{{ $errors->first('email') }}</p>
@@ -53,7 +53,7 @@
                 <!-- Password -->
                 <div class="mt-4">
                     <label for="password" class="block text-zinc-400 uppercase text-[10px] tracking-widest mb-1 ml-1">{{ __('Password') }}</label>
-                    <input id="password" type="password" name="password" required autocomplete="current-password"
+                    <input id="password" type="password" name="password" required autocomplete="new-password"
                         class="w-full bg-black border border-red-950 text-zinc-200 px-4 py-3 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all font-mono text-sm">
                     @if ($errors->has('password'))
                         <p class="text-red-600 text-[10px] uppercase tracking-wider mt-1 ml-1">{{ $errors->first('password') }}</p>
@@ -66,20 +66,13 @@
                     <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password"
                         class="w-full bg-black border border-red-950 text-zinc-200 px-4 py-3 focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all font-mono text-sm">
 
-                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                </div>
-
-                <!-- Remember Me -->
-                <div class="block mt-4">
-                    <label for="remember_me" class="inline-flex items-center cursor-pointer group">
-                        <input id="remember_me" type="checkbox" name="remember" 
-                            class="rounded bg-black border-red-950 text-red-600 shadow-sm focus:ring-red-600 focus:ring-offset-zinc-900">
-                        <span class="ms-2 text-[10px] text-zinc-500 uppercase tracking-widest group-hover:text-zinc-300 transition-colors">{{ __('Remember me') }}</span>
-                    </label>
+                    @if ($errors->has('password_confirmation'))
+                        <p class="text-red-600 text-[10px] uppercase tracking-wider mt-1 ml-1">{{ $errors->first('password_confirmation') }}</p>
+                    @endif
                 </div>
 
                 <div class="flex flex-col space-y-4 mt-6">
-                    <button class="w-full bg-red-700 hover:bg-red-600 text-white uppercase font-bold py-3 transition-colors shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none tracking-widest" href="{{ route('login') }}" type="submit">
+                    <button class="w-full bg-red-700 hover:bg-red-600 text-white uppercase font-bold py-3 transition-colors shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none tracking-widest" type="submit">
                         {{ __('Register') }}
                     </button>
                     
