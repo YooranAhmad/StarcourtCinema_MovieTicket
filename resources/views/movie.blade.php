@@ -105,49 +105,83 @@
                         @endforeach
                     </div>
 
-                    <a href="#" onclick="openBookingModal()" class="mt-6 inline-block w-full text-center bg-[hsl(var(--primary))] hover:bg-white/5 hover:text-[hsl(var(--primary))] text-white font-bold py-3 rounded-lg uppercase tracking-wider transition-colors">
-                    BOOK TICKET
-                    </a>
+                    @auth
+                        <a href="#" onclick="openBookingModal()" class="mt-6 inline-block w-full text-center bg-[hsl(var(--primary))] hover:bg-white/5 hover:text-[hsl(var(--primary))] text-white font-bold py-3 rounded-lg uppercase tracking-wider transition-colors">
+                        BOOK TICKET
+                        </a>
+                    @else
+                        <a href="#" onclick="openLoginPrompt()" class="mt-6 inline-block w-full text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-400 font-bold py-3 rounded-lg uppercase tracking-wider transition-colors border border-white/5 shadow-xl">
+                        BOOK TICKET (LOGIN REQUIRED)
+                        </a>
+                    @endauth
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- LOGIN PROMPT MODAL -->
+    <div id="loginPromptOverlay"
+         class="fixed inset-0 z-[1000] hidden bg-black/90 backdrop-blur-md items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-zinc-950 border-2 border-red-900 p-8 shadow-[0_0_30px_rgba(153,27,27,0.4)] relative">
+            <div class="absolute inset-0 scanline opacity-10 pointer-events-none"></div>
+            <button onclick="closeLoginPrompt()" class="absolute top-4 right-4 text-zinc-500 hover:text-white font-mono">✕</button>
+            
+            <div class="text-center mb-8">
+                <h3 class="text-2xl text-red-600 font-serif uppercase tracking-tighter italic mb-2">Access Denied</h3>
+                <p class="text-zinc-500 text-[10px] font-mono uppercase tracking-[0.2em]">Verification Required: Hawkins ID Required</p>
+            </div>
+
+            <p class="text-zinc-400 text-sm font-mono mb-8 text-center leading-relaxed">
+                Booking systems are reserved for verified Starcourt members. Please present your credentials.
+            </p>
+
+            <div class="space-y-4">
+                <a href="{{ route('login') }}" class="block w-full text-center bg-red-700 hover:bg-red-600 text-white font-bold py-3 uppercase tracking-widest shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all">
+                    Present Credentials
+                </a>
+                <a href="{{ route('register') }}" class="block w-full text-center border border-red-900/50 hover:border-red-600 text-zinc-500 hover:text-red-600 font-bold py-3 uppercase tracking-widest transition-all">
+                    Apply for ID Card
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- BOOKING MODAL -->
-<div id="bookingModalOverlay"
-     class="fixed inset-0 z-[999] hidden bg-black/80 backdrop-blur-sm items-center justify-center">
+    @auth
+    <div id="bookingModalOverlay"
+         class="fixed inset-0 z-[999] hidden bg-black/80 backdrop-blur-sm items-center justify-center">
 
-    <!-- PANEL -->
-    <div class="grid grid-cols-1 w-full h-auto max-w-lg bg-zinc-950 border border-white/10 rounded-2xl p-8 shadow-2xl">
+        <!-- PANEL -->
+        <div class="grid grid-cols-1 w-full h-auto max-w-lg bg-zinc-950 border border-white/10 rounded-2xl p-8 shadow-2xl">
 
-        <!-- CLOSE -->
-        <button onclick="closeBookingModal()"
-                class="absolute top-4 right-4 text-zinc-400 hover:text-white font-mono text-sm">
-            ✕ Close
-        </button>
+            <!-- CLOSE -->
+            <button onclick="closeBookingModal()"
+                    class="absolute top-4 right-4 text-zinc-400 hover:text-white font-mono text-sm">
+                ✕ Close
+            </button>
 
-        <h2 class="text-2xl font-serif mb-6 text-[hsl(var(--primary))]">
-            Book Ticket
-        </h2>
+            <h2 class="text-2xl font-serif mb-6 text-[hsl(var(--primary))]">
+                Book Ticket
+            </h2>
 
-        <form action="{{ route('bookings.store') }}" method="POST" class="space-y-4">
-            @csrf
+            <form action="{{ route('bookings.store') }}" method="POST" class="space-y-4">
+                @csrf
 
-            <input type="hidden" name="movie_id" value="{{ $movie['id'] }}">
-            <input type="hidden" name="title" value="{{ $movie['title'] }}">
-            <input type="hidden" id="pricePerTicket" value="{{ str_replace('$','',$movie['price']) }}">
+                <input type="hidden" name="movie_id" value="{{ $movie['id'] }}">
+                <input type="hidden" name="title" value="{{ $movie['title'] }}">
+                <input type="hidden" id="pricePerTicket" value="{{ str_replace('$','',$movie['price']) }}">
 
-            <div>
-                <label class="text-xs text-zinc-400">Name</label>
-                <input name="name" required
-                       class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white">
-            </div>
+                <div>
+                    <label class="text-xs text-zinc-400">Name</label>
+                    <input name="name" value="{{ Auth::user()->name }}" required
+                           class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white">
+                </div>
 
-            <div>
-                <label class="text-xs text-zinc-400">Email</label>
-                <input type="email" name="email" required
-                       class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white">
-            </div>
+                <div>
+                    <label class="text-xs text-zinc-400">Email</label>
+                    <input type="email" name="email" value="{{ Auth::user()->email }}" required
+                           class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white">
+                </div>
 
             <div>
                 <label class="text-xs text-zinc-400">Showtime</label>
@@ -199,9 +233,7 @@
                 CONFIRM BOOKING
             </button>
         </form>
-    </div>
-</div>
-
+    @endauth
 
     <!-- TRAILER MODAL -->
 
@@ -237,19 +269,36 @@
     <script>
     function openBookingModal() {
         const modal = document.getElementById('bookingModalOverlay');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
     }
 
     function closeBookingModal() {
         const modal = document.getElementById('bookingModalOverlay');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    }
+
+    function openLoginPrompt() {
+        const modal = document.getElementById('loginPromptOverlay');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeLoginPrompt() {
+        const modal = document.getElementById('loginPromptOverlay');
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
 
     const qtyInput = document.getElementById('quantity');
     const totalInput = document.getElementById('totalPrice');
-    const price = parseFloat(document.getElementById('pricePerTicket').value);
+    const pricePerTicketEl = document.getElementById('pricePerTicket');
+    const price = pricePerTicketEl ? parseFloat(pricePerTicketEl.value) : 0;
     const seatCountText = document.getElementById('seatCountText');
     const selectedSeatsInput = document.getElementById('selectedSeatsInput');
     let selectedSeats = [];
