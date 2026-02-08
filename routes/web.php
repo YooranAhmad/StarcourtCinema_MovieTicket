@@ -63,15 +63,15 @@ Route::get('/bookings', [BookingsController::class, 'index'])
 
 Route::middleware('auth')->group(function () {
     Route::get('/booked-seats', function (Request $request) {
-        return Booking::where('title', $request->title)
+        return App\Models\Bookings::where('title', $request->title)
             ->where('showtime', $request->showtime)
             ->pluck('seat')
             ->flatMap(fn ($s) => explode(', ', $s))
             ->values();
-});
+    });
 
 
-    Route::post('/bookings', [BookingController::class, 'store'])
+    Route::post('/bookings', [BookingsController::class, 'store'])
         ->name('bookings.store');
 
 });

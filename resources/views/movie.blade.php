@@ -119,9 +119,14 @@
                     @endauth
 
                     @auth
-                        <a href="#" onclick="openBookingModal()" class="mt-6 inline-block w-full text-center bg-[hsl(var(--primary))] hover:bg-white/5 hover:text-[hsl(var(--primary))] text-white font-bold py-3 rounded-lg uppercase tracking-wider transition-colors">
-                        BOOK TICKET
-                        </a>
+                        <div id="bookingActionContainer">
+                            <a href="#" 
+                               onclick="openBookingModal()" 
+                               id="bookTicketBtn"
+                               class="mt-6 inline-block w-full text-center bg-zinc-800 text-zinc-500 font-bold py-3 rounded-lg uppercase tracking-wider transition-colors border border-white/5 cursor-not-allowed">
+                                BOOK TICKET (SELECT SHOWTIME)
+                            </a>
+                        </div>
                     @else
                         <a href="#" onclick="openLoginPrompt()" class="mt-6 inline-block w-full text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-400 font-bold py-3 rounded-lg uppercase tracking-wider transition-colors border border-white/5 shadow-xl">
                         BOOK TICKET (LOGIN REQUIRED)
@@ -292,7 +297,7 @@
             .then(response => response.json())
             .then(bookedSeats => {
 
-                resetSeats(); // clear previous state
+                resetSeats(); 
 
                 bookedSeats.forEach(seat => {
                     const el = document.getElementById(`seat-${seat}`);
@@ -328,22 +333,25 @@
 
     function selectShowtime(showtime, el) {
         selectedShowtime = showtime;
-
+        
         document.querySelectorAll('.showtime-box').forEach(box => {
-            box.classList.remove('bg-[hsl(var(--primary))]', 'text-black');
+            box.classList.remove('bg-primary-foreground/80', 'text-primary', 'border', 'border-primary');
         });
 
-        el.classList.add('bg-[hsl(var(--primary))]', 'text-black');
+        el.classList.add('bg-primary-foreground/80','text-primary', 'border', 'border-primary');
 
-        // 🔥 THIS WAS MISSING
+        // Update the book button state
+        const bookBtn = document.getElementById('bookTicketBtn');
+        if (bookBtn) {
+            bookBtn.innerText = 'BOOK TICKET';
+            bookBtn.classList.remove('bg-zinc-800', 'text-zinc-500', 'cursor-not-allowed');
+            bookBtn.classList.add('bg-[hsl(var(--primary))]', 'text-white', 'hover:bg-white/5', 'hover:text-[hsl(var(--primary))]');
+        }
+
         document.getElementById('selectedShowtimeInput').value = showtime;
         document.getElementById('showtimeDisplay').value = showtime;
     }
-
-
-
-
-
+    
     function closeBookingModal() {
         const modal = document.getElementById('bookingModalOverlay');
         if (modal) {

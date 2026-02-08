@@ -21,6 +21,19 @@ class BookingsController extends Controller
 
         $totalPrice = (float) str_replace(['$', ','], '', $request->total_price);
 
+        $seats = explode(', ', $request->seat);
+
+        foreach ($seats as $seat) {
+            $exists = Bookings::where('title', $request->title)
+                ->where('showtime', $request->showtime)
+                ->where('seat', 'LIKE', "%{$seat}%")
+                ->exists();
+
+            if ($exists) {
+                return back()->withErrors("Seat {$seat} already booked");
+            }
+        }
+
         $booking = Bookings::create([
             'booking_code' => strtoupper(uniqid('BK-')),
             'title' => $request->title,
@@ -32,20 +45,7 @@ class BookingsController extends Controller
             'total_price' => $totalPrice,
         ]);
 
-        $seats = explode(', ', $request->seat);
-
-        foreach ($seats as $seat) {
-            $exists = Booking::where('title', $request->title)
-                ->where('showtime', $request->showtime)
-                ->where('seat', 'LIKE', "%{$seat}%")
-                ->exists();
-
-            if ($exists) {
-                return back()->withErrors("Seat {$seat} already booked");
-            }
-        }
-
-        return redirect()->route('bookings.index')->with('success', 'Ticket booked successfully!');   
+        return redirect()->route('bookings.index')->with('success', 'Ticket booked successfully!');
     }
 
     public function index()
@@ -61,7 +61,7 @@ class BookingsController extends Controller
             'showtime' => 'required',
         ]);
 
-        $seats = Booking::where('title', $request->title)
+        $seats = Bookings::where('title', $request->title)
             ->where('showtime', $request->showtime)
             ->pluck('seat')
             ->flatMap(fn ($s) => explode(',', $s))

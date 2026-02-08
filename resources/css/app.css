@@ -30,6 +30,8 @@
   --radius: 0.25rem;
 }
 
+
+
 /* Custom Font Families mapped to variables for consistency */
 :root {
   --font-serif: 'Merriweather', serif;
@@ -81,6 +83,26 @@
     animation:
       flicker 0.12s infinite steps(2, end),
       jitter 2.5s infinite;
+  }
+
+  .bg-primary {
+    background-color: hsl(var(--primary));
+  }
+
+  .bg-primary-black {
+    background-color: hsl(var(--background));
+  }
+
+  .bg-primary-foreground {
+    background-color: hsl(var(--primary-foreground));
+  }
+
+  .border-primary {
+    border-color: hsl(var(--primary));
+  }
+
+  .text-primary{
+    color: hsl(var(--primary));
   }
 }
 
