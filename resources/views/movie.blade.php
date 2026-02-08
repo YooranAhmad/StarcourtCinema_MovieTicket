@@ -96,13 +96,27 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-5 h-5 text-[hsl(var(--primary))]"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
                         <span class="text-lg font-mono text-white font-bold uppercase">Available Showtimes</span>
                     </div>
-    
+
+                    @auth
+                    <input type="hidden" name="showtime" id="selectedShowtimeInput">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">                   
+                                @foreach ($movie['showtimes'] as $showtime)
+                                    <div
+                                        onclick="selectShowtime('{{ $showtime }}', this)"
+                                        class="showtime-box bg-zinc-900 border border-zinc-700 p-3 text-center rounded text-white font-mono cursor-pointer transition-all duration-200">
+                                        {{ $showtime }}
+                                    </div>
+
+                                @endforeach
+                        </div>
+                    @else
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                         @foreach ($movie['showtimes'] as $showtime)
-                        <div class="bg-zinc-900 border border-zinc-700 p-3 text-center rounded text-white font-mono hover:bg-[hsl(var(--primary))] hover:text-black hover:border-[hsl(var(--primary))] cursor-default transition-all duration-200">{{ $showtime }}
+                        <div
+                        class="bg-zinc-900 border border-zinc-700 p-3 text-center rounded text-white font-mono hover:bg-[hsl(var(--primary))] hover:text-black hover:border-[hsl(var(--primary))] cursor-default transition-all duration-200">{{ $showtime }}
                         </div>
                         @endforeach
-                    </div>
+                    @endauth
 
                     @auth
                         <a href="#" onclick="openBookingModal()" class="mt-6 inline-block w-full text-center bg-[hsl(var(--primary))] hover:bg-white/5 hover:text-[hsl(var(--primary))] text-white font-bold py-3 rounded-lg uppercase tracking-wider transition-colors">
@@ -184,12 +198,11 @@
 
             <div>
                 <label class="text-xs text-zinc-400">Showtime</label>
-                <select name="showtime" required
-                        class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white">
-                    @foreach ($movie['showtimes'] as $showtime)
-                        <option value="{{ $showtime }}">{{ $showtime }}</option>
-                    @endforeach
-                </select>
+                <input type="text"
+                    id="showtimeDisplay"
+                    name="showtime"
+                    readonly
+                    class="w-full bg-black border border-white/10 rounded px-3 py-2 text-white cursor-not-allowed">
             </div>
 
             <div>
@@ -267,13 +280,69 @@
     <!-- SCRIPTS -->
 
     <script>
+    let selectedShowtime = null;
+
     function openBookingModal() {
-        const modal = document.getElementById('bookingModalOverlay');
-        if (modal) {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
+        if (!selectedShowtime) {
+        alert('Please select a showtime first');
+        return;
     }
+
+        fetch(`/booked-seats?title={{ urlencode($movie['title']) }}&showtime=${selectedShowtime}`)
+            .then(response => response.json())
+            .then(bookedSeats => {
+
+                resetSeats(); // clear previous state
+
+                bookedSeats.forEach(seat => {
+                    const el = document.getElementById(`seat-${seat}`);
+                    if (el) {
+                        el.classList.add('opacity-30', 'cursor-not-allowed');
+                        el.onclick = null;
+                    }
+                });
+
+                document.getElementById('selectedShowtimeInput').value = selectedShowtime;
+
+                const modal = document.getElementById('bookingModalOverlay');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            });
+    }
+
+    function resetSeats() {
+        selectedSeats = [];
+        if (selectedSeatsInput) {
+            selectedSeatsInput.value = '';
+        }
+
+        document.querySelectorAll('.seat-item').forEach(el => {
+            el.className =
+                'seat-item w-8 h-8 flex items-center justify-center border border-white/10 rounded text-[10px] cursor-pointer text-zinc-400 hover:bg-white/5';
+            el.onclick = function () {
+                toggleSeat(el.innerText);
+            };
+
+        });
+    }
+
+    function selectShowtime(showtime, el) {
+        selectedShowtime = showtime;
+
+        document.querySelectorAll('.showtime-box').forEach(box => {
+            box.classList.remove('bg-[hsl(var(--primary))]', 'text-black');
+        });
+
+        el.classList.add('bg-[hsl(var(--primary))]', 'text-black');
+
+        // 🔥 THIS WAS MISSING
+        document.getElementById('selectedShowtimeInput').value = showtime;
+        document.getElementById('showtimeDisplay').value = showtime;
+    }
+
+
+
+
 
     function closeBookingModal() {
         const modal = document.getElementById('bookingModalOverlay');

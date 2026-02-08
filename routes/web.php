@@ -5,6 +5,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\BookingsController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Bookings;
+
+// Dashboard Route
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -18,6 +21,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
     ->name('dashboard');
 
+// Profile Routes
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -26,6 +30,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Starcourt Routes
+
 Route::get('/', function () {
     return view('home');
 });
@@ -53,5 +58,23 @@ Route::post('/bookings', [BookingsController::class, 'store'])
 
 Route::get('/bookings', [BookingsController::class, 'index'])
     ->name('bookings.index');
+
+// Showtime Routes
+
+Route::middleware('auth')->group(function () {
+    Route::get('/booked-seats', function (Request $request) {
+        return Booking::where('title', $request->title)
+            ->where('showtime', $request->showtime)
+            ->pluck('seat')
+            ->flatMap(fn ($s) => explode(', ', $s))
+            ->values();
+});
+
+
+    Route::post('/bookings', [BookingController::class, 'store'])
+        ->name('bookings.store');
+
+});
+
 
 require __DIR__.'/auth.php';

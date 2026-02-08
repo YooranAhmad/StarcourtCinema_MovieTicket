@@ -32,6 +32,19 @@ class BookingsController extends Controller
             'total_price' => $totalPrice,
         ]);
 
+        $seats = explode(', ', $request->seat);
+
+        foreach ($seats as $seat) {
+            $exists = Booking::where('title', $request->title)
+                ->where('showtime', $request->showtime)
+                ->where('seat', 'LIKE', "%{$seat}%")
+                ->exists();
+
+            if ($exists) {
+                return back()->withErrors("Seat {$seat} already booked");
+            }
+        }
+
         return redirect()->route('bookings.index')->with('success', 'Ticket booked successfully!');   
     }
 
@@ -41,5 +54,20 @@ class BookingsController extends Controller
         return view('bookings', compact('tickets'));
     }
 
+    public function bookedSeats(Request $request)
+    {
+        $request->validate([
+            'title' => 'required',
+            'showtime' => 'required',
+        ]);
+
+        $seats = Booking::where('title', $request->title)
+            ->where('showtime', $request->showtime)
+            ->pluck('seat')
+            ->flatMap(fn ($s) => explode(',', $s))
+            ->values();
+
+        return response()->json($seats);
+    }
 
 }
