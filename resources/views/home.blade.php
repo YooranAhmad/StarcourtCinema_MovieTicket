@@ -1,41 +1,12 @@
 @extends('layouts.app')
 @section('content')
-<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-white/5 h-16 flex items-center px-4 md:px-6">
-    <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-        <!--LEFT: LOGO-->
-        <a href="/" class="font-serif text-[hsl(var(--primary))] text-xl md:text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
-            STARCOURT<span class="text-white">CINEMA
-            </span>
-        </a>
 
-        <!--RIGHT: NAV-->
-        <div class="flex gap-4 md:gap-6 text-[10px] md:text-sm font-mono text-zinc-400">
-            <a href="/" class="hover:text-[hsl(var(--primary))] transition-colors">
-                MOVIES
-            </a>
-            <a href="{{ route('bookings.index') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
-                MY_TICKETS
-            </a>
-            @auth
-                <a href="{{ route('dashboard') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
-                    ID_CARD
-                </a>
-            @else
-                <a href="{{ route('login') }}" class="hover:text-[hsl(var(--primary))] transition-colors text-red-500/50" title="Verification Required: Please Login">
-                    ID_CARD (UNVERIFIED)
-                </a>
-            @endauth
-        </div>
-    </div>
-</header>
-
-<body class="bg-[hsl(var(--background))] text-white min-h-screen pt-16">
     <div class="text-center">
-        <p class="text-sm font-bold mt-24 mb-4 uppercase tracking-[0.5em] text-[hsl(var(--primary))]">Now Showing in the Void</p>
+        <p class="text-sm font-bold mt-10 mb-4 uppercase tracking-[0.5em] text-[hsl(var(--primary))]">Now Showing in the Void</p>
 
         <h1 class="relative inline-block group
-           text-6xl md:text-8xl lg:text-9xl
-           font-black leading-none mb-6
+           text-5xl sm:text-7xl md:text-8xl lg:text-9xl
+           font-black leading-none mb-6 mt-0 md:mt-0
            font-serif tracking-tight
            text-transparent bg-clip-text
            bg-gradient-to-b from-red-600 to-red-900
@@ -85,10 +56,10 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-10">
-                <div class="group relative" style="opacity: 1; transform: none;">
+                <div class="group relative perspective-1000">
                     <a href="{{ route('movie.show', 1) }}">
-                        <div class="relative aspect-[2/3] overflow-hidden rounded-lg border border-white/10 bg-zinc-900 shadow-2xl transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-primary/20 group-hover:border-primary/50 cursor-pointer">
-                            <div class="absolute inset-0 bg-black/50 z-10 group-hover:bg-black/20 transition-colors duration-300">
+                        <div class="relative aspect-[2/3] overflow-hidden rounded-lg border border-white/10 bg-zinc-900/50 shadow-2xl transition-all duration-500 group-hover:scale-[1.05] group-hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] group-hover:border-red-600/50 cursor-pointer transform-gpu preserve-3d">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-80 group-hover:opacity-40 transition-opacity duration-500">
                             </div>
                             <img src="images/season1.webp" alt="Season 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0 contrast-125">
                             <div class="absolute bottom-0 left-0 w-full p-6 z-20 bg-gradient-to-t from-black via-black/80 to-transparent">
@@ -124,8 +95,9 @@
                 </div>
                 <div class="group relative" style="opacity: 1; transform: none;">
                     <a href="{{ route('movie.show', 2) }}">
-                        <div class="relative aspect-[2/3] overflow-hidden rounded-lg border border-white/10 bg-zinc-900 shadow-2xl transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-primary/20 group-hover:border-primary/50 cursor-pointer">
-                            <div class="absolute inset-0 bg-black/50 z-10 group-hover:bg-black/20 transition-colors duration-300"></div>
+                        <div class="relative aspect-[2/3] overflow-hidden rounded-lg border border-white/10 bg-zinc-900/50 shadow-2xl transition-all duration-500 group-hover:scale-[1.05] group-hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] group-hover:border-red-600/50 cursor-pointer transform-gpu preserve-3d">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-80 group-hover:opacity-40 transition-opacity duration-500">
+                            </div>
                             <img src="images/season2.webp" alt="Season 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0 contrast-125">
                             <div class="absolute bottom-0 left-0 w-full p-6 z-20 bg-gradient-to-t from-black via-black/80 to-transparent">
                                 <div class="flex justify-between items-start mb-2">
@@ -160,8 +132,9 @@
                 </div>
                 <div class="group relative" style="opacity: 1; transform: none;">
                     <a href="{{ route('movie.show', 3) }}">
-                        <div class="relative aspect-[2/3] overflow-hidden rounded-lg border border-white/10 bg-zinc-900 shadow-2xl transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-primary/20 group-hover:border-primary/50 cursor-pointer">
-                            <div class="absolute inset-0 bg-black/50 z-10 group-hover:bg-black/20 transition-colors duration-300"></div>
+                        <div class="relative aspect-[2/3] overflow-hidden rounded-lg border border-white/10 bg-zinc-900/50 shadow-2xl transition-all duration-500 group-hover:scale-[1.05] group-hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] group-hover:border-red-600/50 cursor-pointer transform-gpu preserve-3d">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-80 group-hover:opacity-40 transition-opacity duration-500">
+                            </div>
                             <img src="images/season3.webp" alt="Season 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0 contrast-125">
                             <div class="absolute bottom-0 left-0 w-full p-6 z-20 bg-gradient-to-t from-black via-black/80 to-transparent">
                                 <div class="flex justify-between items-start mb-2">
@@ -196,5 +169,4 @@
                 </div>
             </div>
     </section>
-</body>
 @endsection

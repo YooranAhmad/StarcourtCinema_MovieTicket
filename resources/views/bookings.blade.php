@@ -1,40 +1,11 @@
 @extends('layouts.app')
 @section('content')
-<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-white/5 h-16 flex items-center px-4 md:px-6">
-    <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
-        <!--LEFT: LOGO-->
-        <a href="/" class="font-serif text-[hsl(var(--primary))] text-xl md:text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
-            STARCOURT<span class="text-white">CINEMA
-            </span>
-        </a>
 
-        <!--RIGHT: NAV-->
-        <div class="flex gap-4 md:gap-6 text-[10px] md:text-sm font-mono text-zinc-400">
-            <a href="/" class="hover:text-[hsl(var(--primary))] transition-colors">
-                MOVIES
-            </a>
-            <a href="{{ route('bookings.index') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
-                MY_TICKETS
-            </a>
-            @auth
-                <a href="{{ route('dashboard') }}" class="hover:text-[hsl(var(--primary))] transition-colors">
-                    ID_CARD
-                </a>
-            @else
-                <a href="{{ route('login') }}" class="hover:text-[hsl(var(--primary))] transition-colors text-red-500/50" title="Verification Required: Please Login">
-                    ID_CARD (UNVERIFIED)
-                </a>
-            @endauth
-        </div>
-    </div>
-</header>
-
-<body class="bg-[hsl(var(--background))] text-white min-h-screen pt-16">
     <div class="text-center">
 
         <h1 class="relative inline-block group
-           text-7xl md:text-7xl lg:text-7xl
-           font-black leading-none mb-6 mt-15
+           text-4xl md:text-6xl lg:text-7xl
+           font-black leading-none mb-6 mt-4 md:mt-0
            font-serif tracking-tight
            text-transparent bg-clip-text
            bg-gradient-to-b from-red-600 to-red-900
@@ -78,6 +49,49 @@
 
     <div class="max-w-3xl mx-auto px-4">
          <div class="border border-white/10 rounded-lg p-6 mb-6 bg-white/1">
+            @if($pendingBookings->isNotEmpty())
+            <div class="mb-8 p-4 border border-yellow-500/30 bg-yellow-900/10 rounded-lg">
+                <div class="flex items-center gap-2 mb-4 text-yellow-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 animate-pulse"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <h2 class="text-xl font-semibold uppercase tracking-widest">Pending Payments</h2>
+                </div>
+
+                <div class="grid gap-4">
+                    @foreach($pendingBookings as $booking)
+                    <div class="flex flex-col md:flex-row justify-between items-center p-4 bg-black/50 border border-yellow-500/20 rounded relative overflow-hidden group">
+                        
+                        <!-- Progress Bar Background -->
+                        <div class="absolute bottom-0 left-0 h-1 bg-yellow-600 transition-all duration-1000" id="progress-{{ $booking->id }}" style="width: 100%"></div>
+
+                        <div class="z-10 text-center md:text-left mb-4 md:mb-0">
+                            <h3 class="text-white font-bold text-lg uppercase">{{ $booking->title }}</h3>
+                            <div class="text-xs font-mono text-zinc-400 mt-1 space-x-3">
+                                <span>{{ $booking->showtime }}</span>
+                                <span>|</span>
+                                <span>Seats: {{ $booking->seat }}</span>
+                            </div>
+                        </div>
+
+                        <div class="z-10 flex items-center gap-4">
+                            <div class="text-right">
+                                <div class="text-[10px] uppercase text-zinc-500 font-mono">Expires In</div>
+                                <div class="text-xl font-mono text-yellow-500 font-bold countdown-timer" 
+                                     data-expire="{{ $booking->created_at->addMinutes(15)->timestamp * 1000 }}"
+                                     data-id="{{ $booking->id }}">
+                                    00:00
+                                </div>
+                            </div>
+                            
+                            <a href="{{ route('payment.show', $booking->id) }}" class="px-6 py-2 bg-yellow-600 hover:bg-yellow-500 text-black font-bold uppercase tracking-wider rounded font-mono text-xs transition-colors shadow-[0_0_10px_rgba(234,179,8,0.3)]">
+                                Pay Now
+                            </a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
             <div class="flex items-center gap-2 mb-4 text-[hsl(var(--primary))]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket w-4 h-4">
                     <path d="M2 9v6a2 2 0 0 0 0 4h1a2 2 0 0 1 2 2v1h14v-1a2 2 0 0 1 2-2h1a2 2 0 0 0 0-4v-6a2 2 0 0 0 0-4h-1a2 2 0 0 1-2-2v-1H5v1a2 2 0 0 1-2 2H2a2 2 0 0 0 0 4Z"></path>
@@ -88,49 +102,51 @@
             </div>
             
             @forelse($tickets as $ticket)
-            <div class="relative border border-white/10 rounded-lg p-4 mb-4 text-white/70 bg-[hsl(var(--background))]">
-                <div class="flex justify-between items-center">
-                    <div class="flex flex-col">
+            <div class="relative group border border-white/10 rounded-lg p-4 md:p-6 mb-4 text-white/80 bg-zinc-900/80 backdrop-blur-sm overflow-hidden transition-all duration-300 hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(220,38,38,0.2)]">
+                <!-- Decorative Bar -->
+                <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-red-600 to-red-900"></div>
+                
+                <!-- Scanline -->
+                <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] z-0 bg-[length:100%_2px,3px_100%] opacity-20"></div>
+
+                <div class="relative z-10 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                    <div class="flex flex-col flex-1">
                         <!--LEFT-SIDE: BOOKING INFO-->
-                        <h2 class="text-md font-semibold mb-2 text-[hsl(var(--primary))] uppercase">
-                            {{ $ticket->title }}
-                        </h2>
-                        <div class="text-xs text-zinc-500 flex items-center gap-2 mb-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-3 h-3">
-                            <path d="M8 2v4"></path>
-                            <path d="M16 2v4"></path>
-                            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
-                            <path d="M3 10h18"></path>
-                            </svg>
-                            {{ $ticket->showtime }}
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="px-2 py-0.5 bg-red-900/40 border border-red-500/30 rounded text-[10px] text-red-400 font-mono tracking-wider uppercase">Admit One</span>
+                            <h2 class="text-md md:text-lg font-bold text-white uppercase tracking-wide text-shadow-neon break-words">
+                                {{ $ticket->title }}
+                            </h2>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-4 text-xs font-mono text-zinc-400">
+                             <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                {{ $ticket->showtime }}
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                Seats: <span class="text-white break-all">{{ $ticket->seat }}</span> (x{{ $ticket->quantity }})
+                            </div>
                         </div>
 
-                        <div class="text-xs text-zinc-500 flex items-center gap-2 uppercase">
-                            Seat: {{ $ticket->seat }} (x{{ $ticket->quantity }})
-                        </div>
-                        <div class="text-xs text-[hsl(var(--primary))] mt-1 font-mono">
-                            Total: ${{ number_format($ticket->total_price, 2) }}
+                        <div class="text-lg text-red-500 mt-3 font-mono font-bold tracking-tighter">
+                            Rp {{ number_format($ticket->total_price, 0, ',', '.') }}
                         </div>
                     </div>
-                    <div class="flex items-center gap-6 text-right">
-                        <div class="space-y-1">
-                            <div class="text-[10px] text-zinc-600 uppercase">
+                    
+                    <div class="flex flex-row md:flex-col items-center justify-between md:justify-center gap-4 md:gap-2 md:text-right border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6 border-dashed">
+                        <div class="space-y-1 text-right">
+                            <div class="text-[10px] text-zinc-500 uppercase font-mono tracking-widest">
+                                Reference Code
+                            </div>
+                            <div class="text-sm md:text-base text-white font-mono font-bold tracking-widest uppercase bg-black/50 px-2 py-1 rounded border border-white/5">
                                 {{ $ticket->booking_code }}
                             </div>
-                            <div class="text-white font-bold tracking-widest uppercase">
-                                {{ $ticket->name }}
-                            </div>
-                            <div class="text-[10px] text-zinc-500">
-                                {{ $ticket->email }}
-                            </div>
                         </div>
-                        <div class="w-12 h-12 bg-white/5 rounded border border-white/10 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket w-4 h-4">
-                                <path d="M2 9v6a2 2 0 0 0 0 4h1a2 2 0 0 1 2 2v1h14v-1a2 2 0 0 1 2-2h1a2 2 0 0 0 0-4v-6a2 2 0 0 0 0-4h-1a2 2 0 0 1-2-2v-1H5v1a2 2 0 0 1-2 2H2a2 2 0 0 0 0 4Z"></path>
-                                <line x1="7" x2="17" y1="15" y2="15"></line>
-                                <line x1="7" x2="17" y1="9" y2="9"></line>
-                            </svg>
-                        </div>
+                        
+                        <!-- Barcode Simulation -->
+                        <div class="h-8 w-24 bg-white/10 mt-2 hidden md:block" style="background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, #fff 2px, #fff 4px);"></div>
                     </div>    
                 </div>
             </div>
@@ -141,5 +157,43 @@
             @endforelse
         </div>
     </div>
-</body>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timers = document.querySelectorAll('.countdown-timer');
+            
+            setInterval(() => {
+                const now = new Date().getTime();
+                
+                timers.forEach(timer => {
+                    const expireTime = parseInt(timer.getAttribute('data-expire'));
+                    const distance = expireTime - now;
+                    
+                    if (distance < 0) {
+                        timer.innerHTML = "EXPIRED";
+                        timer.classList.add('text-red-500');
+                        // Optional: Hide Pay Button
+                        // window.location.reload(); // Reload to clear it via controller (or handle gracefully)
+                    } else {
+                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                        
+                        timer.innerHTML = 
+                            (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+                            (seconds < 10 ? "0" + seconds : seconds);
+                            
+                         // Update progress bar
+                         const id = timer.getAttribute('data-id');
+                         const bar = document.getElementById(`progress-${id}`);
+                         if(bar) {
+                             const totalDuration = 15 * 60 * 1000; // 15 mins in ms
+                             const elapsed = totalDuration - distance;
+                             const percentage = (distance / totalDuration) * 100;
+                             bar.style.width = percentage + "%";
+                         }
+                    }
+                });
+            }, 1000);
+        });
+    </script>
 @endsection

@@ -19,7 +19,47 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body>
-      @yield('content')
+    <body class="antialiased overflow-x-hidden relative bg-[hsl(var(--background))] text-white">
+        <!-- GLOBAL ATMOSPHERE -->
+        <div class="fixed inset-0 z-0 pointer-events-none">
+            <!-- Retro Grid -->
+            <div class="absolute inset-0 bg-grid opacity-20 transform perspective-1000 rotate-x-12 scale-150"></div>
+            
+            <!-- Vignette -->
+            <div class="absolute inset-0 bg-radial-gradient from-transparent via-black/50 to-black"></div>
+            
+            <!-- Floating Spores (Upside Down Particles) -->
+            <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-white/20 rounded-full blur-[1px] animate-float opacity-50"></div>
+            <div class="absolute top-3/4 left-2/3 w-3 h-3 bg-red-500/10 rounded-full blur-[2px] animate-float opacity-30" style="animation-duration: 8s; animation-delay: 1s;"></div>
+            <div class="absolute top-1/3 left-2/3 w-1 h-1 bg-white/10 rounded-full blur-[1px] animate-float opacity-40" style="animation-duration: 12s; animation-delay: 2s;"></div>
+            <div class="absolute bottom-1/4 left-1/3 w-4 h-4 bg-red-900/10 rounded-full blur-[4px] animate-float opacity-20" style="animation-duration: 15s; animation-delay: 3s;"></div>
+        </div>
+
+        <!-- GLOBAL NAVBAR -->
+        <header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-white/5 h-16 flex items-center px-4 md:px-6">
+            <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+                <!--LEFT: LOGO-->
+                <a href="/" class="font-serif text-[hsl(var(--primary))] text-xl md:text-2xl font-black tracking-tighter hover:scale-105 transition-transform">
+                    STARCOURT<span class="text-white">CINEMA</span>
+                </a>
+
+                <!--RIGHT: NAV-->
+                <div class="flex gap-4 md:gap-6 text-[10px] md:text-sm font-mono text-zinc-400">
+                    <a href="/" class="hover:text-[hsl(var(--primary))] transition-colors">MOVIES</a>
+                    <a href="{{ route('bookings.index') }}" class="hover:text-[hsl(var(--primary))] transition-colors">MY_TICKETS</a>
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="hover:text-[hsl(var(--primary))] transition-colors">ID_CARD</a>
+                    @else
+                        <a href="{{ route('login') }}" class="hover:text-[hsl(var(--primary))] transition-colors text-red-500/50" title="Verification Required: Please Login">ID_CARD (UNVERIFIED)</a>
+                    @endauth
+                </div>
+            </div>
+        </header>
+
+        <div class="relative z-10 min-h-screen flex flex-col {{ Request::is('login') || Request::is('register') ? 'pt-16' : 'pt-32' }}">
+            @yield('content')
+        </div>
+
+        @stack('modals')
     </body>
 </html>
