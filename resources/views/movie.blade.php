@@ -91,7 +91,6 @@
                     ▶ Watch Trailer
                 </a>
 
-
                 <div class="border border-white/10 mt-4 p-8 rounded-xl backdrop-blur-md">
                     <div class="flex gap-2 items-center mb-2 pb-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-5 h-5 text-[hsl(var(--primary))]"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
@@ -233,10 +232,11 @@
                 CONFIRM BOOKING
             </button>
         </form>
+        </div>
+    </div>
     @endauth
 
     <!-- TRAILER MODAL -->
-
     <div id="trailerModal"
      class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/80 backdrop-blur-sm">
 
