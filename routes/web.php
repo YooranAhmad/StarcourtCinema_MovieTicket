@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\BookingsController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Bookings;
 use Illuminate\Http\Request;
@@ -24,13 +25,10 @@ Route::middleware('auth')->group(function () {
 
 // Starcourt Routes
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [MovieController::class, 'index']);
 
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
+Route::get('/home', [MovieController::class, 'index'])
+    ->name('home');
 
 Route::get('/movie/{id}', [MovieController::class, 'show'])
     ->name('movie.show');
@@ -61,5 +59,43 @@ Route::middleware('auth')->group(function () {
         ->name('payment.dev-bypass');
 });
 
+// Admin Routes
+
+Route::middleware(['auth','admin'])->group(function(){
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
+        ->name('admin.dashboard');
+    
+    Route::get('/admin/bookings', [AdminController::class, 'bookings'])
+        ->name('admin.bookings');
+    Route::delete('/admin/bookings/{id}', [AdminController::class, 'destroyBooking'])
+        ->name('admin.bookings.destroy');
+    
+    Route::get('/admin/users', [AdminController::class, 'users'])
+        ->name('admin.users');
+    Route::get('/admin/users/create', [AdminController::class, 'createUser'])
+        ->name('admin.users.create');
+    Route::post('/admin/users', [AdminController::class, 'storeUser'])
+        ->name('admin.users.store');
+    Route::get('/admin/users/{id}/edit', [AdminController::class, 'editUser'])
+        ->name('admin.users.edit');
+    Route::put('/admin/users/{id}', [AdminController::class, 'updateUser'])
+        ->name('admin.users.update');
+    Route::delete('/admin/users/{id}', [AdminController::class, 'destroyUser'])
+        ->name('admin.users.destroy');
+
+    // Movies CRUD
+    Route::get('/admin/movies', [AdminController::class, 'movies'])
+        ->name('admin.movies');
+    Route::get('/admin/movies/create', [AdminController::class, 'createMovie'])
+        ->name('admin.movies.create');
+    Route::post('/admin/movies', [AdminController::class, 'storeMovie'])
+        ->name('admin.movies.store');
+    Route::get('/admin/movies/{id}/edit', [AdminController::class, 'editMovie'])
+        ->name('admin.movies.edit');
+    Route::put('/admin/movies/{id}', [AdminController::class, 'updateMovie'])
+        ->name('admin.movies.update');
+    Route::delete('/admin/movies/{id}', [AdminController::class, 'destroyMovie'])
+        ->name('admin.movies.destroy');
+});
 
 require __DIR__.'/auth.php';

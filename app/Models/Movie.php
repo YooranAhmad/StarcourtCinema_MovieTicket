@@ -16,6 +16,9 @@ class Movie extends Model
         'price',
         'showtimes',
         'trailer',
-        'slug',
+    ];
+
+    protected $casts = [
+        'showtimes' => 'array', // Automatically cast JSON to array
     ];
 }

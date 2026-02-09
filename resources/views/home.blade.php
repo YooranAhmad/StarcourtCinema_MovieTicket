@@ -56,25 +56,26 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-10">
+                @foreach($movies as $movie)
                 <div class="group relative perspective-1000">
-                    <a href="{{ route('movie.show', 1) }}">
+                    <a href="{{ route('movie.show', $movie->id) }}">
                         <div class="relative aspect-[2/3] overflow-hidden rounded-lg border border-white/10 bg-zinc-900/50 shadow-2xl transition-all duration-500 group-hover:scale-[1.05] group-hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] group-hover:border-red-600/50 cursor-pointer transform-gpu preserve-3d">
                             <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-80 group-hover:opacity-40 transition-opacity duration-500">
                             </div>
-                            <img src="images/season1.webp" alt="Season 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0 contrast-125">
+                            <img src="{{ asset($movie->image) }}" alt="{{ $movie->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0 contrast-125">
                             <div class="absolute bottom-0 left-0 w-full p-6 z-20 bg-gradient-to-t from-black via-black/80 to-transparent">
                                 <div class="flex justify-between items-start mb-2">
                                     <h3 class="text-2xl font-serif font-bold text-white leading-tight group-hover:text-[hsl(var(--primary))] transition-colors duration-300">
-                                        Season 1: Welcome to Hawkins
+                                        {{ $movie->title }}
                                     </h3>
                                     <span class="px-2 py-1 bg-white/10 text-white text-xs font-mono rounded border border-white/20">
-                                        PG-13
+                                        {{ $movie->rating }}
                                     </span>
                                 </div>
                                 <div class="flex flex-col gap-2 font-mono text-sm text-zinc-400">
                                     <div class="flex justify-between items-end">
                                         <span>
-                                            115 MIN
+                                            {{ $movie->duration }}
                                         </span>
                                         <div class="flex items-center gap-2 text-[hsl(var(--primary))] opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-4 group-hover:translate-x-0">
                                             <span>
@@ -93,80 +94,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="group relative" style="opacity: 1; transform: none;">
-                    <a href="{{ route('movie.show', 2) }}">
-                        <div class="relative aspect-[2/3] overflow-hidden rounded-lg border border-white/10 bg-zinc-900/50 shadow-2xl transition-all duration-500 group-hover:scale-[1.05] group-hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] group-hover:border-red-600/50 cursor-pointer transform-gpu preserve-3d">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-80 group-hover:opacity-40 transition-opacity duration-500">
-                            </div>
-                            <img src="images/season2.webp" alt="Season 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0 contrast-125">
-                            <div class="absolute bottom-0 left-0 w-full p-6 z-20 bg-gradient-to-t from-black via-black/80 to-transparent">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h3 class="text-2xl font-serif font-bold text-white leading-tight group-hover:text-[hsl(var(--primary))] transition-colors duration-300">
-                                        Season 2: Return to the Upside Down
-                                    </h3>
-                                    <span class="px-2 py-1 bg-white/10 text-white text-xs font-mono rounded border border-white/20">
-                                        R
-                                    </span>
-                                </div>
-                                <div class="flex flex-col gap-2 font-mono text-sm text-zinc-400">
-                                    <div class="flex justify-between items-end">
-                                        <span>
-                                            130 MIN
-                                        </span>
-                                        <div class="flex items-center gap-2 text-[hsl(var(--primary))] opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-4 group-hover:translate-x-0">
-                                            <span>
-                                                BOOK NOW
-                                            </span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket w-4 h-4">
-                                                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
-                                                <path d="M13 5v2"></path>
-                                                <path d="M13 17v2"></path>
-                                                <path d="M13 11v2"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="group relative" style="opacity: 1; transform: none;">
-                    <a href="{{ route('movie.show', 3) }}">
-                        <div class="relative aspect-[2/3] overflow-hidden rounded-lg border border-white/10 bg-zinc-900/50 shadow-2xl transition-all duration-500 group-hover:scale-[1.05] group-hover:shadow-[0_0_30px_rgba(220,38,38,0.4)] group-hover:border-red-600/50 cursor-pointer transform-gpu preserve-3d">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 opacity-80 group-hover:opacity-40 transition-opacity duration-500">
-                            </div>
-                            <img src="images/season3.webp" alt="Season 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 filter grayscale group-hover:grayscale-0 contrast-125">
-                            <div class="absolute bottom-0 left-0 w-full p-6 z-20 bg-gradient-to-t from-black via-black/80 to-transparent">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h3 class="text-2xl font-serif font-bold text-white leading-tight group-hover:text-[hsl(var(--primary))] transition-colors duration-300">
-                                        Season 3: Red Lights, Blue Nights
-                                    </h3>
-                                    <span class="px-2 py-1 bg-white/10 text-white text-xs font-mono rounded border border-white/20">
-                                        PG
-                                    </span>
-                                </div>
-                                <div class="flex flex-col gap-2 font-mono text-sm text-zinc-400">
-                                    <div class="flex justify-between items-end">
-                                        <span>
-                                            98 MIN
-                                        </span>
-                                        <div class="flex items-center gap-2 text-[hsl(var(--primary))] opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-4 group-hover:translate-x-0">
-                                            <span>
-                                                BOOK NOW
-                                            </span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket w-4 h-4">
-                                                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
-                                                <path d="M13 5v2"></path>
-                                                <path d="M13 17v2"></path>
-                                                <path d="M13 11v2"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+                @endforeach
             </div>
     </section>
 @endsection
